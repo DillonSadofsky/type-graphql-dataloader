@@ -1,21 +1,21 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": false,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": ["ESNext"],
-    "target": "esnext",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    "isolatedModules": true,
-    "rootDir": "./src",
-    "outDir": "./dist"
-  },
-  "include": ["./src"]
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"strict": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"lib": ["ESNext"],
+		"target": "esnext",
+		"module": "nodenext",
+		"moduleResolution": "nodenext",
+		"sourceMap": true,
+		"declaration": true,
+		"declarationMap": true,
+		"isolatedModules": true,
+		"rootDir": "./src",
+		"outDir": "./dist"
+	},
+	"include": ["./src"]
 }

@@ -4,38 +4,43 @@ TypeGraphQL-DataLoader is an utility to use DataLoader with TypeGraphQL without 
 
 ## Why does this fork exist?
 
-The original library seems to be abandon-ware these days, but it is a very useful glue between `type-graphql`, `typeorm`, and `@apollo/server`.  However, the version of the original library doesn't support modern versions of apollo/graphql/etc.  So this fork modernizes all dependencies.
+The original library seems to be abandon-ware these days, but it is a very useful glue between `type-graphql`, `typeorm`, and `@apollo/server`. However, the version of the original library doesn't support modern versions of apollo/graphql/etc. So this fork modernizes all dependencies.
 
 ### Breaking changes
 
-* Switched to ESM
-* Compatible with graphql 16
-* Compatible with apollo 5
-* Compatible with express 4 or 5
-* Compatible with type-graphql 2.x
+- Switched to ESM
+- Compatible with graphql 16
+- Compatible with apollo 5
+- Compatible with express 4 or 5
+- Compatible with type-graphql 2.x
 
 ## Install
 
-Because the upstream package is now abandon-ware, the package can be pulled directly from github using the following npm command:
+Because the upstream package is now abandon-ware, this fork is published under its own npm scope:
 
 ```
-npm install github:@isoft-data-systems/type-graphql-dataloader
+npm install @isoftdata/type-graphql-dataloader
 ```
 
-This will create an installation from github instead of from the node package manager.
+To pin an exact commit instead (e.g. before it's published, or to test an unreleased fix),
+install directly from a tag on GitHub:
+
+```
+npm install github:ISoft-Data-Systems/type-graphql-dataloader#v0.6.3
+```
 
 The latest build is tested with the following packages:
 
-* type-graphql 2
-* @apollo/server 5
-* (optional) typeorm 0.3
+- type-graphql 2
+- @apollo/server 5
+- (optional) typeorm 0.3
 
 ## Getting Started
 
 Apollo Server is the first-class supported server. If your application uses Apollo Server, pass `ApolloServerLoaderPlugin()` as a plugin when instantiating the server. This plugin is for set-up and clean-up against each request.
 
 ```ts
-import { ApolloServerLoaderPlugin } from "type-graphql-dataloader";
+import { ApolloServerLoaderPlugin } from "@isoftdata/type-graphql-dataloader";
 import { DataSource } from "typeorm";
 
 // Instantiate modern typeorm datasource, connect it to the database
@@ -59,41 +64,41 @@ TypeORM is the first-class supported ORM. If your application uses TypeORM with 
 
 ```ts
 import { ObjectType, Field, ID } from "type-graphql";
-import { TypeormLoader } from "type-graphql-dataloader";
+import { TypeormLoader } from "@isoftdata/type-graphql-dataloader";
 import { Entity, PrimaryGeneratedColumn, ManyToOne, RelationId } from "typeorm";
 import { User } from "./User";
 
 @ObjectType()
 @Entity()
 export class Photo {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+	@Field((type) => ID)
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Field((type) => User)
-  @ManyToOne((type) => User, (user) => user.photos)
-  @TypeormLoader()
-  user: User;
+	@Field((type) => User)
+	@ManyToOne((type) => User, (user) => user.photos)
+	@TypeormLoader()
+	user: User;
 }
 ```
 
 ```ts
 import { ObjectType, Field, ID } from "type-graphql";
-import { TypeormLoader } from "type-graphql-dataloader";
+import { TypeormLoader } from "@isoftdata/type-graphql-dataloader";
 import { Entity, PrimaryGeneratedColumn, OneToMany, RelationId } from "typeorm";
 import { Photo } from "./Photo";
 
 @ObjectType()
 @Entity()
 export class User {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+	@Field((type) => ID)
+	@PrimaryGeneratedColumn()
+	id: number;
 
-  @Field((type) => [Photo])
-  @OneToMany((type) => Photo, (photo) => photo.user)
-  @TypeormLoader()
-  photos: Photo[];
+	@Field((type) => [Photo])
+	@OneToMany((type) => Photo, (photo) => photo.user)
+	@TypeormLoader()
+	photos: Photo[];
 }
 ```
 
@@ -107,7 +112,7 @@ It is possible to assign custom DataLoader to a field by adding `@Loader` decora
 import DataLoader from "dataloader";
 import { groupBy } from "lodash";
 import { Resolver, Query, FieldResolver, Root } from "type-graphql";
-import { Loader } from "type-graphql-dataloader";
+import { Loader } from "@isoftdata/type-graphql-dataloader";
 import { getRepository, In } from "typeorm";
 import { Photo } from "./Photo";
 import { User } from "./User";
