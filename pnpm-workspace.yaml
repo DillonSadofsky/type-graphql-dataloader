@@ -1,11 +1,11 @@
 overrides:
-  # 1.1.0 was published the same day this lockfile was generated; pin to
-  # the previous release so a fresh CI install doesn't trip pnpm's
-  # minimum-release-age supply-chain check.
-  negotiator: "1.0.0"
+    # 1.1.0 was published the same day this lockfile was generated; pin to
+    # the previous release so a fresh CI install doesn't trip pnpm's
+    # minimum-release-age supply-chain check.
+    negotiator: "1.0.0"
 onlyBuiltDependencies:
-  - "@apollo/protobufjs"
-  - sqlite3
+    - "@apollo/protobufjs"
+    - sqlite3
 allowBuilds:
-  "@apollo/protobufjs": true
-  sqlite3: true
+    "@apollo/protobufjs": true
+    sqlite3: true

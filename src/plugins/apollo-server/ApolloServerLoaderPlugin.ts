@@ -1,8 +1,8 @@
 import type {
-  ApolloServerPlugin,
-  BaseContext,
-  GraphQLRequestContextDidResolveSource,
-  GraphQLRequestContextWillSendResponse,
+    ApolloServerPlugin,
+    BaseContext,
+    GraphQLRequestContextDidResolveSource,
+    GraphQLRequestContextWillSendResponse,
 } from "@apollo/server";
 import { Container } from "typedi";
 import type { DataSource } from "typeorm";
@@ -10,40 +10,34 @@ import { v4 as uuidv4 } from "@lukeed/uuid";
 import { TgdContext } from "../../types/TgdContext.js";
 
 interface ApolloServerLoaderPluginOption {
-  typeormGetConnection?: () => DataSource;
+    typeormGetConnection?: () => DataSource;
 }
 
 function getContext<TContext extends BaseContext = BaseContext>(
-  requestContext:
-    | GraphQLRequestContextDidResolveSource<TContext>
-    | GraphQLRequestContextWillSendResponse<TContext>,
+    requestContext: GraphQLRequestContextDidResolveSource<TContext> | GraphQLRequestContextWillSendResponse<TContext>,
 ) {
-  return requestContext?.contextValue
-    ? requestContext.contextValue
-    : /* @ts-expect-error older apollo-server-core context shape, kept for backward compat */
-      requestContext.context;
+    return requestContext?.contextValue
+        ? requestContext.contextValue
+        : /* @ts-expect-error older apollo-server-core context shape, kept for backward compat */
+          requestContext.context;
 }
 
-export const ApolloServerLoaderPlugin = function <
-  TContext extends BaseContext = BaseContext,
->(option?: ApolloServerLoaderPluginOption): ApolloServerPlugin<TContext> {
-  return {
-    requestDidStart: async () => ({
-      async didResolveSource(
-        requestContext: GraphQLRequestContextDidResolveSource<TContext>,
-      ) {
-        Object.assign(getContext<TContext>(requestContext), {
-          _tgdContext: {
-            requestId: uuidv4(),
-            typeormGetConnection: option?.typeormGetConnection,
-          } as TgdContext,
-        });
-      },
-      async willSendResponse(requestContext) {
-        Container.reset(
-          getContext<TContext>(requestContext)._tgdContext.requestId,
-        );
-      },
-    }),
-  };
+export const ApolloServerLoaderPlugin = function <TContext extends BaseContext = BaseContext>(
+    option?: ApolloServerLoaderPluginOption,
+): ApolloServerPlugin<TContext> {
+    return {
+        requestDidStart: async () => ({
+            async didResolveSource(requestContext: GraphQLRequestContextDidResolveSource<TContext>) {
+                Object.assign(getContext<TContext>(requestContext), {
+                    _tgdContext: {
+                        requestId: uuidv4(),
+                        typeormGetConnection: option?.typeormGetConnection,
+                    } as TgdContext,
+                });
+            },
+            async willSendResponse(requestContext) {
+                Container.reset(getContext<TContext>(requestContext)._tgdContext.requestId);
+            },
+        }),
+    };
 };

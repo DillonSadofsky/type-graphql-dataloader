@@ -7,31 +7,31 @@ import { TypeormLoader } from "../../../decorators/typeorm/TypeormLoader.js";
 @ObjectType()
 @Entity()
 export class ApplicationSoftware extends Base<ApplicationSoftware> {
-  @Field()
-  @PrimaryColumn()
-  id: number;
+    @Field()
+    @PrimaryColumn()
+    id: number;
 
-  @Field()
-  @Column({ nullable: true })
-  name: string;
+    @Field()
+    @Column({ nullable: true })
+    name: string;
 
-  @Field()
-  @Column({ nullable: true })
-  majorVersion: number;
+    @Field()
+    @Column({ nullable: true })
+    majorVersion: number;
 
-  @Field()
-  @Column({ nullable: true })
-  minorVersion: number;
+    @Field()
+    @Column({ nullable: true })
+    minorVersion: number;
 
-  @Field((type) => [PersonalComputer])
-  @ManyToMany((type) => PersonalComputer, (pc) => pc.installedApps)
-  @TypeormLoader()
-  installedComputers: PersonalComputer[];
+    @Field((type) => [PersonalComputer])
+    @ManyToMany((type) => PersonalComputer, (pc) => pc.installedApps)
+    @TypeormLoader()
+    installedComputers: PersonalComputer[];
 
-  @Field((type) => Company)
-  @ManyToOne((type) => Company, (company) => company.publishedApps, {
-    lazy: true,
-  })
-  @TypeormLoader()
-  publishedBy: Lazy<Company>;
+    @Field((type) => Company)
+    @ManyToOne((type) => Company, (company) => company.publishedApps, {
+        lazy: true,
+    })
+    @TypeormLoader()
+    publishedBy: Lazy<Company>;
 }

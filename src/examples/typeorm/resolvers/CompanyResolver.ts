@@ -7,25 +7,24 @@ import { Loader } from "../../../decorators/Loader.js";
 
 @Resolver((of) => Company)
 export default class CompanyResolver {
-  @Query((returns) => [Company])
-  async companies(): Promise<Company[]> {
-    const { getGlobalDataSource } = await import("../index.js");
-    return getGlobalDataSource().getRepository(Company).find();
-  }
+    @Query((returns) => [Company])
+    async companies(): Promise<Company[]> {
+        const { getGlobalDataSource } = await import("../index.js");
+        return getGlobalDataSource().getRepository(Company).find();
+    }
 
-  @FieldResolver()
-  @Loader<string, Chair[]>(async (ids: readonly any[]) => {
-    const { getGlobalDataSource } = await import("../index.js");
-    const chairs = await getGlobalDataSource()
-      .getRepository(Chair)
-      .find({
-        where: { company: { id: In([...ids]) } },
-      });
-    const chairsById = groupBy(chairs, "companyId");
-    return ids.map((id) => chairsById[id] ?? []);
-  })
-  chairs(@Root() root: Company) {
-    return (dataloader: DataLoader<string, Chair[]>) =>
-      dataloader.load(root.id);
-  }
+    @FieldResolver()
+    @Loader<string, Chair[]>(async (ids: readonly any[]) => {
+        const { getGlobalDataSource } = await import("../index.js");
+        const chairs = await getGlobalDataSource()
+            .getRepository(Chair)
+            .find({
+                where: { company: { id: In([...ids]) } },
+            });
+        const chairsById = groupBy(chairs, "companyId");
+        return ids.map((id) => chairsById[id] ?? []);
+    })
+    chairs(@Root() root: Company) {
+        return (dataloader: DataLoader<string, Chair[]>) => dataloader.load(root.id);
+    }
 }

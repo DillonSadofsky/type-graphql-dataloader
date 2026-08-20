@@ -71,14 +71,14 @@ import { User } from "./User";
 @ObjectType()
 @Entity()
 export class Photo {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+    @Field((type) => ID)
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Field((type) => User)
-  @ManyToOne((type) => User, (user) => user.photos)
-  @TypeormLoader()
-  user: User;
+    @Field((type) => User)
+    @ManyToOne((type) => User, (user) => user.photos)
+    @TypeormLoader()
+    user: User;
 }
 ```
 
@@ -91,14 +91,14 @@ import { Photo } from "./Photo";
 @ObjectType()
 @Entity()
 export class User {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+    @Field((type) => ID)
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Field((type) => [Photo])
-  @OneToMany((type) => Photo, (photo) => photo.user)
-  @TypeormLoader()
-  photos: Photo[];
+    @Field((type) => [Photo])
+    @OneToMany((type) => Photo, (photo) => photo.user)
+    @TypeormLoader()
+    photos: Photo[];
 }
 ```
 

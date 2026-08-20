@@ -1,13 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  RelationId,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { type Lazy } from "../types/Lazy.js";
 import { Base, Company, Desk } from "./index.js";
 import { TypeormLoader } from "../../../decorators/typeorm/TypeormLoader.js";
@@ -15,30 +7,30 @@ import { TypeormLoader } from "../../../decorators/typeorm/TypeormLoader.js";
 @ObjectType()
 @Entity()
 export class Chair extends Base<Chair> {
-  @Field((type) => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
+    @Field((type) => ID)
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  name?: string;
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    name?: string;
 
-  @Field((type) => Company)
-  @ManyToOne((type) => Company, (company) => company.desks)
-  @TypeormLoader((type) => Company, (chair: Chair) => chair.companyId)
-  company: Company;
+    @Field((type) => Company)
+    @ManyToOne((type) => Company, (company) => company.desks)
+    @TypeormLoader((type) => Company, (chair: Chair) => chair.companyId)
+    company: Company;
 
-  @RelationId((chair: Chair) => chair.company)
-  companyId: string;
+    @RelationId((chair: Chair) => chair.company)
+    companyId: string;
 
-  @Field((type) => Desk, { nullable: true })
-  @OneToOne((type) => Desk, (desk) => desk.chair, {
-    lazy: true,
-    nullable: true,
-  })
-  @JoinColumn()
-  desk: Lazy<Desk | null>;
+    @Field((type) => Desk, { nullable: true })
+    @OneToOne((type) => Desk, (desk) => desk.chair, {
+        lazy: true,
+        nullable: true,
+    })
+    @JoinColumn()
+    desk: Lazy<Desk | null>;
 
-  @RelationId((chair: Chair) => chair.desk)
-  deskId?: number;
+    @RelationId((chair: Chair) => chair.desk)
+    deskId?: number;
 }
