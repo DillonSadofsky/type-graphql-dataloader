@@ -1,5 +1,5 @@
 {
-  "name": "type-graphql-dataloader",
+  "name": "@isoft-data-systems/type-graphql-dataloader",
   "description": "A utility to use DataLoader with TypeGraphQL without fuss",
   "version": "0.6.3",
   "author": {
@@ -17,6 +17,9 @@
     "typeorm"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/ISoft-Data-Systems/type-graphql-dataloader/issues"
   },

@@ -6,9 +6,4 @@ yarn-error.log
 node_modules/
 coverage/
 
-dist/examples/
-dist/tests/
-
-dist/**/*.map
-
-#dist/
+dist/

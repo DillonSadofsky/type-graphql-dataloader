@@ -16,13 +16,18 @@ The original library seems to be abandon-ware these days, but it is a very usefu
 
 ## Install
 
-Because the upstream package is now abandon-ware, the package can be pulled directly from github using the following npm command:
+Because the upstream package is now abandon-ware, this fork is published under its own npm scope:
 
 ```
-npm install github:@isoft-data-systems/type-graphql-dataloader
+npm install @isoft-data-systems/type-graphql-dataloader
 ```
 
-This will create an installation from github instead of from the node package manager.
+To pin an exact commit instead (e.g. before it's published, or to test an unreleased fix),
+install directly from a tag on GitHub:
+
+```
+npm install github:ISoft-Data-Systems/type-graphql-dataloader#v0.6.3
+```
 
 The latest build is tested with the following packages:
 
