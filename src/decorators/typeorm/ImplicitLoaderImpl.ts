@@ -7,9 +7,9 @@ import type { RelationMetadata } from "typeorm/metadata/RelationMetadata.js";
 import { TgdContext } from "../../types/TgdContext.js";
 
 export function ImplicitLoaderImpl<
-  V extends ObjectLiteral
+  V extends ObjectLiteral,
 >(): PropertyDecorator {
-  return (target: Object, propertyKey: string | symbol) => {
+  return (target: object, propertyKey: string | symbol) => {
     UseMiddleware(async ({ root, context }, next) => {
       const tgdContext = context._tgdContext as TgdContext;
       if (tgdContext.typeormGetConnection == null) {
@@ -31,12 +31,12 @@ export function ImplicitLoaderImpl<
         relation.isOneToOneOwner || relation.isManyToOne
           ? ToOneOwnerDataloader
           : relation.isOneToOneNotOwner
-          ? ToOneNotOwnerDataloader
-          : relation.isOneToMany
-          ? OneToManyDataloader
-          : relation.isManyToMany
-          ? ManyToManyDataloader
-          : null;
+            ? ToOneNotOwnerDataloader
+            : relation.isOneToMany
+              ? OneToManyDataloader
+              : relation.isManyToMany
+                ? ManyToManyDataloader
+                : null;
       if (dataloaderCls == null) {
         return await next();
       }
@@ -51,7 +51,7 @@ async function handler<V>(
   relation: RelationMetadata,
   dataloaderCls:
     | (new (r: RelationMetadata, c: DataSource) => DataLoader<string, V | null>)
-    | (new (r: RelationMetadata, c: DataSource) => DataLoader<string, V[]>)
+    | (new (r: RelationMetadata, c: DataSource) => DataLoader<string, V[]>),
 ) {
   if (typeormGetConnection == null) {
     throw Error("Connection is not available");
@@ -62,7 +62,7 @@ async function handler<V>(
   if (!container.has(serviceId)) {
     container.set(
       serviceId,
-      new dataloaderCls(relation, typeormGetConnection())
+      new dataloaderCls(relation, typeormGetConnection()),
     );
   }
 
@@ -88,13 +88,13 @@ class ToOneOwnerDataloader<V extends ObjectLiteral> extends DataLoader<
         connection,
         pks,
         relationName,
-        columns
+        columns,
       );
       const referencedColumnNames = columns.map((c) => c.propertyPath);
       const entitiesByRelationKey = await getEntitiesByRelationKey(
         entities,
         relationName,
-        referencedColumnNames
+        referencedColumnNames,
       );
       return pks.map((pk) => entitiesByRelationKey[pk]?.[0] ?? null);
     });
@@ -116,15 +116,15 @@ class ToOneNotOwnerDataloader<V extends ObjectLiteral> extends DataLoader<
         connection,
         pks,
         relationName,
-        columns
+        columns,
       );
       const referencedColumnNames = columns.map(
-        (c) => c.referencedColumn!.propertyPath
+        (c) => c.referencedColumn!.propertyPath,
       );
       const entitiesByRelationKey = await getEntitiesByRelationKey<V>(
         entities,
         inverseRelation.propertyName,
-        referencedColumnNames
+        referencedColumnNames,
       );
       return pks.map((pk) => entitiesByRelationKey[pk]?.[0] ?? null);
     });
@@ -145,15 +145,15 @@ class OneToManyDataloader<V extends ObjectLiteral> extends DataLoader<
         connection,
         pks,
         relation.propertyName,
-        columns
+        columns,
       );
       const referencedColumnNames = columns.map(
-        (c) => c.referencedColumn!.propertyPath
+        (c) => c.referencedColumn!.propertyPath,
       );
       const entitiesByRelationKey = await getEntitiesByRelationKey(
         entities,
         inverseRelation.propertyName,
-        referencedColumnNames
+        referencedColumnNames,
       );
       return pks.map((pk) => entitiesByRelationKey[pk] ?? []);
     });
@@ -177,15 +177,15 @@ class ManyToManyDataloader<V extends ObjectLiteral> extends DataLoader<
         connection,
         pks,
         relationName,
-        columns
+        columns,
       );
       const referencedColumnNames = columns.map(
-        (c) => c.referencedColumn!.propertyPath
+        (c) => c.referencedColumn!.propertyPath,
       );
       const entitiesByRelationKey = await getEntitiesByRelationKey(
         entities,
         inversePropName,
-        referencedColumnNames
+        referencedColumnNames,
       );
       return pks.map((pk) => entitiesByRelationKey[pk] ?? []);
     });
@@ -197,19 +197,19 @@ async function findEntities<V extends ObjectLiteral>(
   connection: DataSource,
   stringifiedPrimaryKeys: readonly string[],
   relationName: string,
-  columnMetas: ColumnMetadata[]
+  columnMetas: ColumnMetadata[],
 ): Promise<V[]> {
   const { Brackets } = await import("typeorm");
 
   const qb = connection.createQueryBuilder<V>(
     relation.type,
-    relation.propertyName
+    relation.propertyName,
   );
 
   if (relation.isOneToOneOwner || relation.isManyToOne) {
     qb.innerJoinAndSelect(
       `${relation.propertyName}.${relationName}`,
-      relationName
+      relationName,
     );
   } else if (
     relation.isOneToOneNotOwner ||
@@ -219,7 +219,7 @@ async function findEntities<V extends ObjectLiteral>(
     const inversePropName = relation.inverseRelation!.propertyName;
     qb.innerJoinAndSelect(
       `${relation.propertyName}.${inversePropName}`,
-      inversePropName
+      inversePropName,
     );
   } else {
     throw Error("never");
@@ -242,7 +242,7 @@ async function findEntities<V extends ObjectLiteral>(
             const key = `${i}_${keys[j]}`;
             exp.andWhere(`${column} = :${key}`, { [key]: pk[j] });
           });
-        })
+        }),
       );
     });
   }
@@ -252,7 +252,7 @@ async function findEntities<V extends ObjectLiteral>(
 async function getEntitiesByRelationKey<V>(
   entities: V[],
   inversePropName: string,
-  referencedColumnNames: string[]
+  referencedColumnNames: string[],
 ): Promise<{ [relationKey: string]: V[] }> {
   const entitiesByRelationKey: { [relationKey: string]: V[] } = {};
   for (const entity of entities) {

@@ -16,21 +16,21 @@ interface ApolloServerLoaderPluginOption {
 function getContext<TContext extends BaseContext = BaseContext>(
   requestContext:
     | GraphQLRequestContextDidResolveSource<TContext>
-    | GraphQLRequestContextWillSendResponse<TContext>
+    | GraphQLRequestContextWillSendResponse<TContext>,
 ) {
   return requestContext?.contextValue
     ? requestContext.contextValue
-    : /* @ts-ignore */
+    : /* @ts-expect-error older apollo-server-core context shape, kept for backward compat */
       requestContext.context;
 }
 
 export const ApolloServerLoaderPlugin = function <
-  TContext extends BaseContext = BaseContext
+  TContext extends BaseContext = BaseContext,
 >(option?: ApolloServerLoaderPluginOption): ApolloServerPlugin<TContext> {
   return {
     requestDidStart: async () => ({
       async didResolveSource(
-        requestContext: GraphQLRequestContextDidResolveSource<TContext>
+        requestContext: GraphQLRequestContextDidResolveSource<TContext>,
       ) {
         Object.assign(getContext<TContext>(requestContext), {
           _tgdContext: {
@@ -41,7 +41,7 @@ export const ApolloServerLoaderPlugin = function <
       },
       async willSendResponse(requestContext) {
         Container.reset(
-          getContext<TContext>(requestContext)._tgdContext.requestId
+          getContext<TContext>(requestContext)._tgdContext.requestId,
         );
       },
     }),

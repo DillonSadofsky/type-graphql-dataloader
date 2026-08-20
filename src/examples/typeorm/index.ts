@@ -55,7 +55,7 @@ export async function seed() {
   ];
 
   const [company1, company2, company3] = await Promise.all(
-    companyValues.map((v) => globalDataSource.getRepository(Company).save(v))
+    companyValues.map((v) => globalDataSource.getRepository(Company).save(v)),
   );
 
   const deskValues = [
@@ -65,7 +65,7 @@ export async function seed() {
     { name: "desk4", company: company2 },
   ];
   const [desk1, desk2, desk3, desk4] = await Promise.all(
-    deskValues.map((v) => globalDataSource.getRepository(Desk).save(v))
+    deskValues.map((v) => globalDataSource.getRepository(Desk).save(v)),
   );
 
   const chairValues = [
@@ -73,12 +73,12 @@ export async function seed() {
     { name: "chair2", company: company2 },
   ];
   const [chair1, chair2] = await Promise.all(
-    chairValues.map((v) => globalDataSource.getRepository(Chair).save(v))
+    chairValues.map((v) => globalDataSource.getRepository(Chair).save(v)),
   );
 
   const certValues = [{ name: "cert1" }, { name: "cert2" }, { name: "cert3" }];
   const [cert1, cert2, cert3] = await Promise.all(
-    certValues.map((v) => globalDataSource.getRepository(Cert).save(v))
+    certValues.map((v) => globalDataSource.getRepository(Cert).save(v)),
   );
 
   const employeeValues: Partial<Employee>[] = [
@@ -99,7 +99,7 @@ export async function seed() {
   const [employee1, employee2, employee3] = await Promise.all(
     employeeValues.map(async (v) => {
       return await globalDataSource.getRepository(Employee).save(v);
-    })
+    }),
   );
 
   const appValues = [
@@ -109,8 +109,8 @@ export async function seed() {
   ];
   const [app1, app2, app3] = await Promise.all(
     appValues.map((v) =>
-      globalDataSource.getRepository(ApplicationSoftware).save(v)
-    )
+      globalDataSource.getRepository(ApplicationSoftware).save(v),
+    ),
   );
 
   const pcValues = [
@@ -136,8 +136,8 @@ export async function seed() {
   ];
   const [pc1, pc2, pc3, pc4] = await Promise.all(
     pcValues.map((v) =>
-      globalDataSource.getRepository(PersonalComputer).save(v)
-    )
+      globalDataSource.getRepository(PersonalComputer).save(v),
+    ),
   );
 }
 
@@ -148,7 +148,7 @@ interface ListenResult {
 
 export async function listen(
   port: number,
-  resolvers: NonEmptyArray<Function>
+  resolvers: NonEmptyArray<Function>,
 ): Promise<ListenResult> {
   const app = express();
   app.use(bodyParser.json());

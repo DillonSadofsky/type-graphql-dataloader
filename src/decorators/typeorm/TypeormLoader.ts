@@ -12,19 +12,19 @@ export function TypeormLoader(): PropertyDecorator;
 
 export function TypeormLoader(
   keyFunc: KeyFunc,
-  option?: TypeormLoaderOption
+  option?: TypeormLoaderOption,
 ): PropertyDecorator;
 
 export function TypeormLoader<V>(
   typeFunc: (type?: void) => ObjectType<V>,
   keyFunc: KeyFunc,
-  option?: TypeormLoaderOption
+  option?: TypeormLoaderOption,
 ): PropertyDecorator;
 
 export function TypeormLoader<V extends ObjectLiteral>(
   typeFuncOrKeyFunc?: ((type?: void) => ObjectType<V>) | KeyFunc,
   keyFuncOrOption?: KeyFunc | TypeormLoaderOption,
-  option?: TypeormLoaderOption
+  option?: TypeormLoaderOption,
 ): PropertyDecorator {
   if (typeFuncOrKeyFunc == null) {
     return ImplicitLoaderImpl();

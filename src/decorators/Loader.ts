@@ -10,17 +10,17 @@ interface ResolverData {
 
 type BatchLoadFn<K, V> = (
   keys: ReadonlyArray<K>,
-  data: ResolverData
+  data: ResolverData,
 ) => PromiseLike<ArrayLike<V | Error>>;
 
 export function Loader<K, V, C = K>(
   batchLoadFn: BatchLoadFn<K, V>,
-  options?: DataLoader.Options<K, V, C>
+  options?: DataLoader.Options<K, V, C>,
 ): MethodAndPropDecorator {
   return (
-    target: Object,
+    target: object,
     propertyKey: string | symbol,
-    descriptor?: TypedPropertyDescriptor<any>
+    _descriptor?: TypedPropertyDescriptor<any>,
   ) => {
     UseMiddleware(async ({ context }, next) => {
       const serviceId = `tgd#${
@@ -31,7 +31,7 @@ export function Loader<K, V, C = K>(
       if (!container.has(serviceId)) {
         container.set(
           serviceId,
-          new DataLoader((keys) => batchLoadFn(keys, { context }), options)
+          new DataLoader((keys) => batchLoadFn(keys, { context }), options),
         );
       }
       const dataloader = container.get(serviceId);

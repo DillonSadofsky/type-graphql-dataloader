@@ -8,7 +8,6 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
-  type Relation,
 } from "typeorm";
 import type { Lazy } from "../types/Lazy.js";
 import { Base, Company, Desk, ApplicationSoftware } from "./index.js";

@@ -3,7 +3,7 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 
 import { gql, request } from "graphql-request";
-import { ObjectLiteral, DataSource, getConnectionManager } from "typeorm";
+import { ObjectLiteral, DataSource } from "typeorm";
 import { connect, listen, seed } from "../examples/typeorm/index.js";
 import { Company } from "../examples/typeorm/entities/Company.js";
 import { ApplicationSoftware } from "../examples/typeorm/entities/ApplicationSoftware.js";
@@ -66,7 +66,7 @@ const coalesceTypeNames = (objects: ObjectLiteral[]): typename => {
 
 const verify = async <Entity extends ObjectLiteral>(
   objectOrObjects: ObjectLiteral | ObjectLiteral[],
-  entityOrEntities: Entity | Entity[]
+  entityOrEntities: Entity | Entity[],
 ) => {
   if (Array.isArray(objectOrObjects)) {
     if (!Array.isArray(entityOrEntities)) {
@@ -89,7 +89,7 @@ const verify = async <Entity extends ObjectLiteral>(
           throw Error("Corresponding entity was not found");
         }
         return verify(object, entity);
-      })
+      }),
     );
   } else {
     if (Array.isArray(entityOrEntities)) {
@@ -129,7 +129,7 @@ const verify = async <Entity extends ObjectLiteral>(
           const nextEntity = await (await getSelfEntity())[k];
           return verify(nextObj, nextEntity);
         }
-      })
+      }),
     );
   }
 };

@@ -13,9 +13,9 @@ type KeyFunc = (root: any) => any | any[] | undefined;
 
 export function ExplicitLoaderImpl<V extends ObjectLiteral>(
   keyFunc: KeyFunc,
-  option?: TypeormLoaderOption
+  option?: TypeormLoaderOption,
 ): PropertyDecorator {
-  return (target: Object, propertyKey: string | symbol) => {
+  return (target: object, propertyKey: string | symbol) => {
     UseMiddleware(async ({ root, context }, next) => {
       const tgdContext = context._tgdContext as TgdContext;
       if (tgdContext.typeormGetConnection == null) {
@@ -34,7 +34,7 @@ export function ExplicitLoaderImpl<V extends ObjectLiteral>(
         !(relation.isOneToMany || relation.isOneToOneNotOwner)
       ) {
         throw Error(
-          "selfKey option is available only for OneToMany or OneToOneNotOwner"
+          "selfKey option is available only for OneToMany or OneToOneNotOwner",
         );
       }
 
@@ -65,8 +65,8 @@ async function handler<V extends ObjectLiteral>(
   newDataloader: (connection: DataSource) => DataLoader<any, V>,
   callback: (
     dataloader: DataLoader<any, V>,
-    columns: ColumnMetadata[]
-  ) => Promise<any>
+    columns: ColumnMetadata[],
+  ) => Promise<any>,
 ) {
   if (typeormGetConnection == null) {
     throw Error("Connection is not available");
@@ -89,7 +89,7 @@ async function handleToMany<V extends ObjectLiteral>(
   foreignKeyFunc: (root: any) => any | undefined,
   root: any,
   tgdContext: TgdContext,
-  relation: RelationMetadata
+  relation: RelationMetadata,
 ) {
   return handler(
     tgdContext,
@@ -99,7 +99,7 @@ async function handleToMany<V extends ObjectLiteral>(
     async (dataloader) => {
       const fks = foreignKeyFunc(root);
       return await dataloader.loadMany(fks);
-    }
+    },
   );
 }
 
@@ -107,7 +107,7 @@ async function handleToOne<V extends ObjectLiteral>(
   foreignKeyFunc: (root: any) => any | undefined,
   root: any,
   tgdContext: TgdContext,
-  relation: RelationMetadata
+  relation: RelationMetadata,
 ) {
   return handler(
     tgdContext,
@@ -117,14 +117,14 @@ async function handleToOne<V extends ObjectLiteral>(
     async (dataloader) => {
       const fk = foreignKeyFunc(root);
       return fk != null ? await dataloader.load(fk) : null;
-    }
+    },
   );
 }
 async function handleOneToManyWithSelfKey<V extends ObjectLiteral>(
   selfKeyFunc: (root: any) => any | any[],
   root: any,
   tgdContext: TgdContext,
-  relation: RelationMetadata
+  relation: RelationMetadata,
 ) {
   return handler(
     tgdContext,
@@ -134,7 +134,7 @@ async function handleOneToManyWithSelfKey<V extends ObjectLiteral>(
     async (dataloader, columns) => {
       const pk = columns[0].getEntityValue(root);
       return await dataloader.load(pk);
-    }
+    },
   );
 }
 
@@ -142,7 +142,7 @@ async function handleOneToOneNotOwnerWithSelfKey<V extends ObjectLiteral>(
   selfKeyFunc: (root: any) => any | undefined,
   root: any,
   tgdContext: TgdContext,
-  relation: RelationMetadata
+  relation: RelationMetadata,
 ) {
   return handler(
     tgdContext,
@@ -152,13 +152,13 @@ async function handleOneToOneNotOwnerWithSelfKey<V extends ObjectLiteral>(
     async (dataloader, columns) => {
       const pk = columns[0].getEntityValue(root);
       return (await dataloader.load(pk))[0] ?? null;
-    }
+    },
   );
 }
 function directLoader<V extends ObjectLiteral>(
   relation: RelationMetadata,
   connection: DataSource,
-  grouper: string | ((entity: V) => any)
+  grouper: string | ((entity: V) => any),
 ) {
   return async (ids: readonly any[]) => {
     const entities = keyBy(
@@ -166,7 +166,7 @@ function directLoader<V extends ObjectLiteral>(
         .createQueryBuilder<V>(relation.type, relation.propertyName)
         .whereInIds(ids)
         .getMany(),
-      grouper
+      grouper,
     ) as Dictionary<V>;
     return ids.map((id) => entities[id]);
   };
@@ -176,8 +176,8 @@ class ToManyDataloader<V extends ObjectLiteral> extends DataLoader<any, V> {
   constructor(relation: RelationMetadata, connection: DataSource) {
     super(
       directLoader(relation, connection, (entity) =>
-        relation.inverseEntityMetadata.primaryColumns[0].getEntityValue(entity)
-      )
+        relation.inverseEntityMetadata.primaryColumns[0].getEntityValue(entity),
+      ),
     );
   }
 }
@@ -188,8 +188,8 @@ class ToOneDataloader<V extends ObjectLiteral> extends DataLoader<any, V> {
       directLoader(
         relation,
         connection,
-        relation.inverseEntityMetadata.primaryColumns[0].propertyName
-      )
+        relation.inverseEntityMetadata.primaryColumns[0].propertyName,
+      ),
     );
   }
 }
@@ -198,7 +198,7 @@ class SelfKeyDataloader<V extends ObjectLiteral> extends DataLoader<any, V[]> {
   constructor(
     relation: RelationMetadata,
     connection: DataSource,
-    selfKeyFunc: (root: any) => any
+    selfKeyFunc: (root: any) => any,
   ) {
     super(async (ids) => {
       const columns = relation.inverseRelation!.joinColumns;
@@ -207,11 +207,11 @@ class SelfKeyDataloader<V extends ObjectLiteral> extends DataLoader<any, V[]> {
         await connection
           .createQueryBuilder<V>(relation.type, relation.propertyName)
           .where(
-            `${relation.propertyName}.${columns[0].propertyPath} IN (:...${k})`
+            `${relation.propertyName}.${columns[0].propertyPath} IN (:...${k})`,
           )
           .setParameter(k, ids)
           .getMany(),
-        selfKeyFunc
+        selfKeyFunc,
       );
       return ids.map((id) => entities[id] ?? []);
     });
