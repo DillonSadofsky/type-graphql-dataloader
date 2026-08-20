@@ -28,7 +28,11 @@
   "type": "module",
   "packageManager": "pnpm@11.22.0",
   "files": [
-    "./dist/**/*.*"
+    "dist/index.js",
+    "dist/index.d.ts",
+    "dist/decorators/**/*.*",
+    "dist/plugins/**/*.*",
+    "dist/types/**/*.*"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
