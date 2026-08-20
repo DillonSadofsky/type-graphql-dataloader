@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - "@apollo/protobufjs"
+  - sqlite3
+allowBuilds:
+  "@apollo/protobufjs": true
+  sqlite3: true
